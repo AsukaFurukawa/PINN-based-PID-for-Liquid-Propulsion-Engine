@@ -99,8 +99,10 @@ def create_simplified_engine_3d(
     r_injector = np.linspace(0, r_chamber, 10)
     
     r_grid, z_grid = np.meshgrid(r_injector, z_injector)
-    theta_grid, _ = np.meshgrid(theta, z_injector)
-    theta_grid = theta_grid.T
+    
+    # Create theta grid with same shape as r_grid
+    theta_temp = np.linspace(0, 2*np.pi, 10)
+    theta_grid, _ = np.meshgrid(theta_temp, z_injector)
     
     x_injector = r_grid * np.cos(theta_grid)
     y_injector = r_grid * np.sin(theta_grid)
@@ -184,8 +186,10 @@ def create_simplified_engine_3d(
     r_combustion = np.linspace(r_chamber * 0.4, r_chamber * 0.8, 50)
     
     r_grid, z_grid = np.meshgrid(r_combustion, z_combustion)
-    theta_grid, _ = np.meshgrid(theta, z_combustion)
-    theta_grid = theta_grid.T
+    
+    # Create a compatible theta grid
+    theta_comb = np.linspace(0, 2*np.pi, 50)
+    theta_grid, _ = np.meshgrid(theta_comb, z_combustion)
     
     x_combustion = r_grid * np.cos(theta_grid)
     y_combustion = r_grid * np.sin(theta_grid)
@@ -200,17 +204,15 @@ def create_simplified_engine_3d(
         name="Combustion Zone"
     ))
     
-    # Add a visualization of the exhaust plume
-    z_exhaust = np.linspace(chamber_length + nozzle_length, 
-                           chamber_length + nozzle_length + 0.2, 50)
-    r_exhaust_start = r_exit
-    r_exhaust_end = r_exit * 2.5
-    
-    r_exhaust = np.linspace(0, 1, 50) * (r_exhaust_end - r_exhaust_start) + r_exhaust_start
+    # Add exhaust plume
+    z_exhaust = np.linspace(chamber_length + nozzle_length, chamber_length + nozzle_length + 0.2, 50)
+    r_exhaust = np.linspace(r_exit, r_exit * 1.5, 50)
     
     r_grid, z_grid = np.meshgrid(r_exhaust, z_exhaust)
-    theta_grid, _ = np.meshgrid(theta, z_exhaust)
-    theta_grid = theta_grid.T
+    
+    # Create a compatible theta grid
+    theta_exhaust = np.linspace(0, 2*np.pi, 50)
+    theta_grid, _ = np.meshgrid(theta_exhaust, z_exhaust)
     
     x_exhaust = r_grid * np.cos(theta_grid)
     y_exhaust = r_grid * np.sin(theta_grid)
@@ -359,8 +361,10 @@ def visualize_temperature_distribution(
         surface_count=20,
         colorscale='Jet',
         colorbar=dict(
-            title="Temperature [K]",
-            titleside="right"
+            title=dict(
+                text="Temperature [K]",
+                side="right"
+            )
         ),
         caps=dict(
             x_show=False,

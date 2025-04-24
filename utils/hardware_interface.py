@@ -193,7 +193,9 @@ class RocketEngineVirtualHardware:
             'ambient_pressure': 101325,  # Pa
             'temperature_ambient': 290,  # K
             'temperature_combustion': 3000,  # K
-            'simulation_rate': 20  # Hz
+            'simulation_rate': 20,  # Hz
+            'ignition_delay': 0.5,  # seconds delay after igniter signal
+            'pressure_factor': 5e6  # Pa/(kg/s) - more realistic value
         }
         
     def start(self):
@@ -235,6 +237,10 @@ class RocketEngineVirtualHardware:
         self.running = False
         self.ignited = False
         
+        # Reset ignition timer
+        if hasattr(self, 'ignition_start_time'):
+            delattr(self, 'ignition_start_time')
+        
         # Reset sensors and actuators
         for sensor in self.sensors.values():
             sensor.set_value(0.0)
@@ -263,9 +269,15 @@ class RocketEngineVirtualHardware:
             
             # Check ignition state
             if igniter > 0.7 and not self.ignited and fuel_flow > 0.05 and oxidizer_flow > 0.05:
-                self.ignited = True
-                logger.info("Engine ignited")
+                # Start ignition sequence with delay
+                if not hasattr(self, 'ignition_start_time'):
+                    self.ignition_start_time = time.time()
                 
+                # Check if ignition delay has passed
+                if time.time() - self.ignition_start_time >= self.sim_params['ignition_delay']:
+                    self.ignited = True
+                    logger.info("Engine ignited")
+            
             # If ignition has occurred, simulate engine running
             if self.ignited:
                 # Calculate mixture ratio
@@ -276,9 +288,10 @@ class RocketEngineVirtualHardware:
                     
                 # Calculate chamber pressure (simplified model)
                 total_flow = fuel_flow + oxidizer_flow
-                pressure_factor = 10e6  # Pa/(kg/s)
-                chamber_pressure = total_flow * pressure_factor
-                chamber_pressure = min(chamber_pressure, self.sim_params['chamber_pressure_max'])
+                chamber_pressure = total_flow * self.sim_params['pressure_factor']
+                
+                # Ensure pressure is within realistic bounds
+                chamber_pressure = max(self.sim_params['ambient_pressure'], min(chamber_pressure, self.sim_params['chamber_pressure_max']))
                 
                 # Calculate chamber temperature (simplification)
                 if 1.5 < mixture_ratio < 4.0:

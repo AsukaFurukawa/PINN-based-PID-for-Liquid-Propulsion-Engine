@@ -7,6 +7,11 @@ import sys
 import os
 import torch
 
+# Important: Add this line to disable automatic monitoring of torch modules by streamlit
+# This avoids the "__path__._path" error
+if hasattr(torch, '_C'):
+    torch._C._log_api_usage_once = lambda *args, **kwargs: None
+
 # Add parent directory to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -539,7 +544,7 @@ def main():
         # Physics constraints
         st.subheader("Physics Constraints")
         
-        st.markdown("""
+        st.markdown(r"""
         The PINN model incorporates the following physics-based constraints:
         
         1. **Thrust Equation**: $F = \dot{m} v_e + (p_e - p_a)A_e$

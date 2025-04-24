@@ -75,9 +75,9 @@ def setup_controllers(pinn_model, target_thrust=500.0):
     """
     # Basic PID controller for thrust
     basic_pid = PIDController(
-        kp=0.002,    # Proportional gain
-        ki=0.0001,   # Integral gain
-        kd=0.0001,   # Derivative gain
+        kp=0.005,    # Increase proportional gain
+        ki=0.0005,   # Increase integral gain
+        kd=0.0002,   # Slightly increase derivative gain
         setpoint=target_thrust,
         output_limits=(0.05, 0.5)  # Limit fuel flow rate
     )
@@ -85,9 +85,9 @@ def setup_controllers(pinn_model, target_thrust=500.0):
     # PINN-guided PID controller
     pinn_pid = PINNGuidedPIDController(
         pinn_model=pinn_model,
-        kp=0.002,
-        ki=0.0001,
-        kd=0.0001,
+        kp=0.005,    # Match the basic controller for fair comparison
+        ki=0.0005,
+        kd=0.0002,
         setpoint=target_thrust,
         output_limits=(0.05, 0.5)
     )
