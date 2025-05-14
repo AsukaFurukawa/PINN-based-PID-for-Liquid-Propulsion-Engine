@@ -271,10 +271,19 @@ def add_injector_plate(fig, chamber_radius, perf_data):
     # Injector plate
     z_injector = np.linspace(-0.02, 0, 10)
     r_injector = np.linspace(0, chamber_radius, 20)
-    theta = np.linspace(0, 2*np.pi, 20)  # Changed from 40 to 20 to match r_injector
     
+    # Use the same number of points for theta as r_injector
+    theta = np.linspace(0, 2*np.pi, 20)
+    
+    # Create meshgrid with proper dimensions
     r_grid, z_grid = np.meshgrid(r_injector, z_injector)
-    theta_grid, _ = np.meshgrid(theta, z_injector)
+    
+    # Create a theta grid with same dimensions as r_grid
+    theta_temp = np.linspace(0, 2*np.pi, 20)
+    theta_grid, _ = np.meshgrid(theta_temp, z_injector)
+    
+    # Verify shapes before multiplication
+    assert r_grid.shape == theta_grid.shape, f"Shape mismatch: r_grid {r_grid.shape} vs theta_grid {theta_grid.shape}"
     
     x_injector = r_grid * np.cos(theta_grid)
     y_injector = r_grid * np.sin(theta_grid)
