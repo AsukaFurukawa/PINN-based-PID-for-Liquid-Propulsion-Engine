@@ -418,14 +418,16 @@ def add_combustion_visualization(fig, chamber_length, chamber_radius, perf_data)
         
         # Color intensity based on combustion and position
         intensity = combustion_factor * (z_ratio + flicker)
-        intensity = max(0, min(1, intensity))
+        intensity = max(0, min(1, intensity))  # Ensure intensity is between 0 and 1
         
         if z_ratio > 0.7:  # Near injector
-            # Yellow/white hot
-            colors.append(f'rgba(255, {180 + int(75*intensity)}, {50 + int(200*intensity)}, {0.7*intensity})')
+            # Yellow/white hot - ensure alpha is between 0 and 1
+            alpha = min(0.7 * intensity, 0.99)  # Ensure alpha is valid
+            colors.append(f'rgba(255, {180 + int(75*intensity)}, {50 + int(200*intensity)}, {alpha})')
         else:  # Further down chamber
-            # Orange/red
-            colors.append(f'rgba(255, {100 + int(155*intensity)}, {20 + int(80*intensity)}, {0.5*intensity})')
+            # Orange/red - ensure alpha is between 0 and 1
+            alpha = min(0.5 * intensity, 0.99)  # Ensure alpha is valid
+            colors.append(f'rgba(255, {100 + int(155*intensity)}, {20 + int(80*intensity)}, {alpha})')
         
         # Vary particle size
         sizes.append(3 + 2 * np.random.rand())
@@ -534,9 +536,12 @@ def add_exhaust_plume(fig, chamber_length, nozzle_length, exit_radius, perf_data
             plume_radius[i] = plume_radius[i] * (1 - diamond_effect)
     
     # Create plume surface
-    theta = np.linspace(0, 2*np.pi, 40)
+    theta = np.linspace(0, 2*np.pi, 20)  # Changed from 40 to 20
     r_grid, z_grid = np.meshgrid(np.linspace(0, 1, 20), plume_z)
     theta_grid, _ = np.meshgrid(theta, plume_z)
+    
+    # Verify shapes are compatible
+    assert r_grid.shape == theta_grid.shape, f"Shape mismatch: r_grid {r_grid.shape} vs theta_grid {theta_grid.shape}"
     
     # Adjust radius based on grid
     r_grid_scaled = np.zeros_like(r_grid)
