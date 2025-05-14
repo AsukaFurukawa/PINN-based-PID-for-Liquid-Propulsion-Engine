@@ -55,6 +55,51 @@ The project includes an interactive dashboard built with Streamlit that allows y
 - Compare different engine configurations
 - View real-time simulation results
 
+## Advanced Aerospace Visualization Branch
+
+An enhanced aerospace visualization branch (`enhanced-aerospace-visualization`) is available with advanced visualization features:
+
+### New Features
+- **Detailed Engine Components**: 
+  - Combustion chamber with variable geometry
+  - Converging-diverging nozzle with accurate flow profiles
+  - Injector face with multiple injection elements
+  - Cooling channels and thermal management systems
+  - Propellant feed lines and control valves
+  - Sensors, mounting brackets, and ignition system
+
+- **Realistic Combustion Dynamics**:
+  - Physics-based flame visualization with turbulent flow effects
+  - Realistic color gradients based on temperature distribution
+  - Dynamic flame behavior that responds to engine parameters
+  - Flamelet visualization for detailed combustion effects
+
+- **Advanced Exhaust Plume Modeling**:
+  - Shock diamond patterns in supersonic exhaust
+  - Realistic plume expansion based on exit pressure ratio
+  - Temperature-based color gradients
+  - Variable opacity to represent density changes
+
+- **Real-time Performance Overlay**:
+  - Key engine metrics displayed on the 3D visualization
+  - Color-coded performance indicators
+  - Optimization recommendations based on current operation
+
+### Using the Enhanced Visualization
+To use the enhanced visualization features:
+
+1. Switch to the enhanced visualization branch:
+   ```
+   git checkout enhanced-aerospace-visualization
+   ```
+
+2. Run the enhanced real-time dashboard:
+   ```
+   python run_real_time_viz.py
+   ```
+
+All visualizations update in real-time as the engine simulation runs, providing an immersive and educational view into rocket engine operation.
+
 ## Future Work
 
 - Integration with actual engine hardware

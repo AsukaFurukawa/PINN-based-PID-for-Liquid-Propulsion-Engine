@@ -1,6 +1,8 @@
 import plotly.graph_objects as go
 import numpy as np
 import pandas as pd
+import json
+import time
 
 
 def create_simplified_engine_3d(
@@ -11,23 +13,29 @@ def create_simplified_engine_3d(
     nozzle_length=0.12,  # m
     injector_plate_thickness=0.02,  # m
     cooling_channels=True,
-    num_points=100
+    num_points=100,
+    animation_frame=None,
+    performance_data=None,
+    enhanced_visuals=False
 ):
     """
-    Create a 3D visualization of a simplified rocket engine.
+    Create a 3D visualization of a simplified rocket engine with optional performance data overlay.
     
     Args:
-        chamber_length: Length of combustion chamber [m]
-        chamber_diameter: Diameter of combustion chamber [m]
-        throat_diameter: Diameter of nozzle throat [m]
-        exit_diameter: Diameter of nozzle exit [m]
-        nozzle_length: Length of nozzle [m]
-        injector_plate_thickness: Thickness of injector plate [m]
+        chamber_length: Chamber length [m]
+        chamber_diameter: Chamber diameter [m]
+        throat_diameter: Throat diameter [m]
+        exit_diameter: Exit diameter [m]
+        nozzle_length: Nozzle length [m]
+        injector_plate_thickness: Injector plate thickness [m]
         cooling_channels: Whether to show cooling channels
         num_points: Number of points for resolution
+        animation_frame: Current animation frame (if animating)
+        performance_data: Dictionary with performance data to display
+        enhanced_visuals: Enable enhanced visual effects for more detailed rendering
         
     Returns:
-        Plotly figure with 3D engine model
+        Plotly figure with 3D visualization
     """
     # Create figure
     fig = go.Figure()
@@ -252,23 +260,25 @@ def visualize_temperature_distribution(
     nozzle_length=0.12,  # m
     max_temp=3000,  # K
     ambient_temp=300,  # K
-    num_points=50
+    num_points=50,
+    performance_data=None
 ):
     """
-    Create a 3D visualization of temperature distribution in the engine.
+    Create a 3D visualization of temperature distribution in a rocket engine.
     
     Args:
-        chamber_length: Length of combustion chamber [m]
-        chamber_diameter: Diameter of combustion chamber [m]
-        throat_diameter: Diameter of nozzle throat [m]
-        exit_diameter: Diameter of nozzle exit [m]
-        nozzle_length: Length of nozzle [m]
+        chamber_length: Chamber length [m]
+        chamber_diameter: Chamber diameter [m]
+        throat_diameter: Throat diameter [m]
+        exit_diameter: Exit diameter [m]
+        nozzle_length: Nozzle length [m]
         max_temp: Maximum temperature [K]
         ambient_temp: Ambient temperature [K]
         num_points: Number of points for resolution
+        performance_data: Dictionary with live performance data
         
     Returns:
-        Plotly figure with temperature distribution
+        Plotly figure with 3D visualization
     """
     # Create figure
     fig = go.Figure()
@@ -415,22 +425,24 @@ def visualize_flow_velocity(
     exit_diameter=0.09,  # m
     nozzle_length=0.12,  # m
     max_velocity=2000,  # m/s
-    num_points=20
+    num_points=20,
+    performance_data=None
 ):
     """
-    Create a 3D visualization of flow velocity in the engine.
+    Create a 3D visualization of flow velocity in a rocket engine.
     
     Args:
-        chamber_length: Length of combustion chamber [m]
-        chamber_diameter: Diameter of combustion chamber [m]
-        throat_diameter: Diameter of nozzle throat [m]
-        exit_diameter: Diameter of nozzle exit [m]
-        nozzle_length: Length of nozzle [m]
+        chamber_length: Chamber length [m]
+        chamber_diameter: Chamber diameter [m]
+        throat_diameter: Throat diameter [m]
+        exit_diameter: Exit diameter [m]
+        nozzle_length: Nozzle length [m]
         max_velocity: Maximum flow velocity [m/s]
         num_points: Number of points for resolution
+        performance_data: Dictionary with live performance data
         
     Returns:
-        Plotly figure with flow velocity visualization
+        Plotly figure with 3D visualization
     """
     # Create figure
     fig = go.Figure()
