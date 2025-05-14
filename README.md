@@ -17,13 +17,23 @@ The project combines hardware (a small-scale liquid rocket engine) with a softwa
 
 ```
 PINN-based-PID-for-Liquid-Propulsion-Engine/
-├── data/                 # Datasets and data generation scripts
-├── models/               # Neural network model definitions
-├── utils/                # Utility functions and physics equations
-├── visualization/        # Visualization tools and dashboard
-├── notebooks/            # Jupyter notebooks for experimentation
-├── requirements.txt      # Python dependencies
-└── README.md             # This file
+├── data/                    # Datasets and data generation scripts
+├── models/                  # Neural network model definitions
+├── utils/                   # Utility functions and physics equations
+├── visualization/           # Visualization tools and dashboard
+│   ├── enhanced_aerospace_viz.py  # Enhanced 3D engine visualization
+│   ├── enhanced_dashboard.py      # Interactive dashboard for enhanced viz
+│   ├── comparison_viz.py          # Side-by-side comparison visualization
+│   ├── animated_viz.py            # Time-varying animated visualizations
+│   └── ...                  # Other visualization modules
+├── notebooks/               # Jupyter notebooks for experimentation
+├── run_app.py               # Script to run the basic dashboard
+├── run_enhanced_viz.py      # Script to run the enhanced aerospace visualization
+├── run_standalone_viz.py    # Generate standalone visualization HTML
+├── run_comparison_viz.py    # Generate side-by-side comparisons
+├── run_animated_viz.py      # Generate animated visualizations
+├── requirements.txt         # Python dependencies
+└── README.md                # This file
 ```
 
 ## Setup and Installation
@@ -35,7 +45,11 @@ PINN-based-PID-for-Liquid-Propulsion-Engine/
    ```
 3. Run the simulation:
    ```
-   python visualization/app.py
+   python run_app.py
+   ```
+4. Run the enhanced visualization:
+   ```
+   python run_enhanced_viz.py
    ```
 
 ## Physics Components
@@ -49,60 +63,93 @@ The PINN model incorporates the following physical principles:
 
 ## Visualization
 
-The project includes an interactive dashboard built with Streamlit that allows you to:
+The project includes multiple visualization options:
+
+### Basic Dashboard
+The standard dashboard allows you to:
 - Adjust engine parameters (mixture ratio, chamber geometry, etc.)
 - Visualize predicted performance metrics
 - Compare different engine configurations
 - View real-time simulation results
 
-## Advanced Aerospace Visualization Branch
+### Enhanced Aerospace Visualization
+For more detailed and realistic visualizations, the enhanced dashboard provides:
 
-An enhanced aerospace visualization branch (`enhanced-aerospace-visualization`) is available with advanced visualization features:
+- **Realistic Engine Components**:
+  - Bell-shaped nozzle with proper contour
+  - Detailed injector face with multiple elements
+  - Cooling channels with temperature-dependent effects
+  - Propellant feed lines
 
-### New Features
-- **Detailed Engine Components**: 
-  - Combustion chamber with variable geometry
-  - Converging-diverging nozzle with accurate flow profiles
-  - Injector face with multiple injection elements
-  - Cooling channels and thermal management systems
-  - Propellant feed lines and control valves
-  - Sensors, mounting brackets, and ignition system
-
-- **Realistic Combustion Dynamics**:
-  - Physics-based flame visualization with turbulent flow effects
-  - Realistic color gradients based on temperature distribution
-  - Dynamic flame behavior that responds to engine parameters
-  - Flamelet visualization for detailed combustion effects
-
-- **Advanced Exhaust Plume Modeling**:
-  - Shock diamond patterns in supersonic exhaust
-  - Realistic plume expansion based on exit pressure ratio
+- **Dynamic Visual Effects**:
+  - Shock diamonds in exhaust plume based on pressure ratios
+  - Particle-based combustion visualization
   - Temperature-based color gradients
-  - Variable opacity to represent density changes
+  - Engine state visualization (startup, nominal, shutdown)
 
-- **Real-time Performance Overlay**:
-  - Key engine metrics displayed on the 3D visualization
-  - Color-coded performance indicators
-  - Optimization recommendations based on current operation
+To use the enhanced visualization:
+```
+python run_enhanced_viz.py
+```
 
-### Using the Enhanced Visualization
-To use the enhanced visualization features:
+### Standalone Visualizations
 
-1. Switch to the enhanced visualization branch:
-   ```
-   git checkout enhanced-aerospace-visualization
-   ```
+Generate static HTML visualizations with configurable parameters:
+```
+python run_standalone_viz.py --pressure 2.5 --mixture 2.1 --status "Nominal Operation"
+```
 
-2. Run the enhanced real-time dashboard:
-   ```
-   python run_real_time_viz.py
-   ```
+### Comparison Visualizations
 
-All visualizations update in real-time as the engine simulation runs, providing an immersive and educational view into rocket engine operation.
+Compare multiple engine configurations side by side:
+```
+# Compare different engine statuses
+python run_comparison_viz.py --status-comparison
+
+# Compare different mixture ratios
+python run_comparison_viz.py --parameter mixture_ratio --values 1.8,2.5,5.0
+```
+
+### Animated Visualizations
+
+Create animated visualizations showing parameter changes over time:
+```
+# Animate chamber pressure changes
+python run_animated_viz.py --parameter chamber_pressure --values 0.5:3.0:10
+
+# Show complete engine sequence from startup to shutdown
+python run_animated_viz.py --sequence
+```
+
+## Command-Line Options
+
+### Enhanced Visualization Options
+```
+python run_enhanced_viz.py
+```
+
+### Standalone Visualization Options
+```
+python run_standalone_viz.py [--pressure PRESSURE] [--mixture MIXTURE] 
+                             [--status STATUS] [--output OUTPUT_FILE]
+```
+
+### Comparison Visualization Options
+```
+python run_comparison_viz.py [--parameter PARAMETER] [--values VALUES]
+                             [--output OUTPUT_FILE] [--status-comparison]
+```
+
+### Animated Visualization Options
+```
+python run_animated_viz.py [--parameter PARAMETER] [--values VALUES] 
+                           [--output OUTPUT_FILE] [--duration MILLISECONDS]
+                           [--fps FPS] [--sequence]
+```
 
 ## Future Work
 
 - Integration with actual engine hardware
 - Real-time control and monitoring
 - Enhanced physics models
-- Optimization for different performance metrics 
+ 
