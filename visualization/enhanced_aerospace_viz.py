@@ -271,7 +271,7 @@ def add_injector_plate(fig, chamber_radius, perf_data):
     # Injector plate
     z_injector = np.linspace(-0.02, 0, 10)
     r_injector = np.linspace(0, chamber_radius, 20)
-    theta = np.linspace(0, 2*np.pi, 40)
+    theta = np.linspace(0, 2*np.pi, 20)  # Changed from 40 to 20 to match r_injector
     
     r_grid, z_grid = np.meshgrid(r_injector, z_injector)
     theta_grid, _ = np.meshgrid(theta, z_injector)
