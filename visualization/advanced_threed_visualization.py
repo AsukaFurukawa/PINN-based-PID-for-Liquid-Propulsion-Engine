@@ -115,8 +115,7 @@ class AdvancedThreeDVisualization:
         # Render component
         components.html(
             html_content,
-            height=self.height,
-            key=self.viz_key
+            height=self.height
         )
     
     def _create_html_component(self):
