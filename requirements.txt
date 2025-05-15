@@ -1,12 +1,16 @@
-numpy==1.24.3
-scipy==1.10.1
-pandas==2.0.2
-matplotlib==3.7.1
+numpy>=1.22.0
+pandas>=1.4.0
+matplotlib>=3.5.0
+streamlit>=1.22.0
+plotly>=5.10.0
+torch>=2.0.0
+scikit-learn>=1.0.0
+scipy>=1.8.0
+tensorflow>=2.10.0  # Optional: only if using TensorFlow models
+altair>=4.2.0
+watchdog>=2.1.0  # For auto-reloading
+pyarrow>=8.0.0  # For streamlit performance
 seaborn==0.12.2
-torch==2.0.1
-scikit-learn==1.2.2
-streamlit==1.22.0
-plotly==5.14.1
 pyserial==3.5
 sympy==1.12
 tqdm==4.65.0
@@ -16,4 +20,14 @@ flake8==6.0.0
 jupyter==1.0.0
 ipywidgets==8.0.6
 pyyaml==6.0
-h5py==3.8.0 
+h5py==3.8.0
+# Added for enhanced three.js visualization
+streamlit-webrtc>=0.45.0
+streamlit-javascript>=0.1.5
+streamlit-elements>=0.1.0  # For three.js integration
+stmol>=0.0.7  # For molecular visualization
+py3js>=0.0.2  # Python wrapper for three.js
+nodejs>=0.1.1  # For bundling the JavaScript
+pyvista>=0.37.0  # For 3D scientific visualization
+threevis>=0.2.0  # For three.js visualizations
+vtk>=9.1.0  # For 3D visualization toolkit 

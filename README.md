@@ -13,6 +13,33 @@ The project combines hardware (a small-scale liquid rocket engine) with a softwa
 3. **Visualization**: Interactive interface for parameter tuning and performance visualization
 4. **PID Controller**: Control system for parameters like chamber pressure and thrust
 
+## Advanced 3D Visualization
+
+The visualization branch contains advanced 3D visualization capabilities using three.js to provide realistic and detailed rocket engine models with physics-based simulations. This visualization system is designed for educational purposes, engineering analysis, and real-time monitoring.
+
+### Visualization Features
+
+- **Realistic 3D Engine Models**: Detailed liquid rocket engine components with physically accurate proportions
+- **Dynamic Effects**: Real-time visualization of combustion, exhaust plumes with shock diamonds, and transient behaviors
+- **Physics-Based Simulation**: Performance metrics calculated from real rocket engine principles
+- **Interactive Controls**: Adjust engine parameters and observe real-time effects
+- **Educational Capabilities**: Learn about rocket engine design, performance, and operation
+
+### Running the Visualization
+
+To run the advanced 3D visualization:
+
+```bash
+python run_threed_visualization.py --mode simulation
+```
+
+Available modes:
+- `simulation` - For interactive engine simulation
+- `educational` - For educational/learning purposes
+- `analysis` - For detailed performance analysis
+
+See the [visualization documentation](visualization/three_js/README.md) for more details.
+
 ## Project Structure
 
 ```
@@ -152,4 +179,8 @@ python run_animated_viz.py [--parameter PARAMETER] [--values VALUES]
 - Integration with actual engine hardware
 - Real-time control and monitoring
 - Enhanced physics models
+
+## License
+
+MIT License
  
