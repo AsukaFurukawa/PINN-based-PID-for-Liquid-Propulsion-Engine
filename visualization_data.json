@@ -1,0 +1,13 @@
+{
+  "thrust": 0.0,
+  "chamber_pressure": 100000.0,
+  "exit_velocity": 0.0,
+  "mixture_ratio": 0.0,
+  "fuel_flow_rate": 0.0,
+  "oxidizer_flow_rate": 0.0,
+  "chamber_temperature": 300,
+  "wall_temperature": 300,
+  "throat_erosion": 0.028700000000000128,
+  "status": "Engine Off",
+  "timestamp": "2025-05-14 20:59:56"
+}

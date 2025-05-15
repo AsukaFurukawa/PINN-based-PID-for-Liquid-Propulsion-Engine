@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Liquid Rocket Engine Visualization</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #121212;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        
+        #container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+        }
+        
+        #engine-container {
+            width: 100%;
+            height: 100%;
+        }
+        
+        #controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(20, 20, 30, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 300px;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        .control-group h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #88ccff;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+        }
+        
+        button {
+            background-color: #2266aa;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        button:hover {
+            background-color: #3377bb;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            height: 10px;
+            width: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        #status-text {
+            font-weight: bold;
+        }
+        
+        .metrics {
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .metric-value {
+            font-weight: bold;
+            color: #aaddff;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="engine-container"></div>
+        
+        <div id="controls">
+            <div class="control-group">
+                <h3>Engine Status</h3>
+                <div>
+                    <span class="status-indicator" id="status-indicator"></span>
+                    <span id="status-text">Standby</span>
+                </div>
+                <div style="margin-top: 10px;">
+                    <button id="btn-standby">Standby</button>
+                    <button id="btn-ignition">Ignition</button>
+                    <button id="btn-startup">Startup</button>
+                    <button id="btn-nominal">Nominal</button>
+                    <button id="btn-shutdown">Shutdown</button>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <h3>Engine Parameters</h3>
+                <label for="chamber-pressure">Chamber Pressure (MPa): <span id="pressure-value">2.0</span></label>
+                <input type="range" id="chamber-pressure" min="0.1" max="5.0" step="0.1" value="2.0">
+                
+                <label for="mixture-ratio">Mixture Ratio (O/F): <span id="mixture-value">2.1</span></label>
+                <input type="range" id="mixture-ratio" min="1.0" max="7.0" step="0.1" value="2.1">
+            </div>
+            
+            <div class="control-group">
+                <h3>Visualization</h3>
+                <button id="btn-camera-default">Default View</button>
+                <button id="btn-camera-side">Side View</button>
+                <button id="btn-camera-top">Top View</button>
+                <button id="btn-auto-rotate">Toggle Rotation</button>
+            </div>
+            
+            <div class="control-group metrics">
+                <h3>Performance Metrics</h3>
+                <div class="metric">
+                    <span>Thrust:</span>
+                    <span class="metric-value" id="thrust-value">0 N</span>
+                </div>
+                <div class="metric">
+                    <span>Specific Impulse:</span>
+                    <span class="metric-value" id="isp-value">0 s</span>
+                </div>
+                <div class="metric">
+                    <span>Chamber Temperature:</span>
+                    <span class="metric-value" id="temp-value">300 K</span>
+                </div>
+                <div class="metric">
+                    <span>Mass Flow:</span>
+                    <span class="metric-value" id="flow-value">0 kg/s</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Load Three.js and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.137.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.137.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stats.js@0.17.0/build/stats.min.js"></script>
+    
+    <!-- Load our utility and visualization files -->
+    <script src="utils.js"></script>
+    <script src="engine_visualization.js"></script>
+    
+    <script>
+        // Initialize engine visualizer when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create engine visualizer
+            const visualizer = new RocketEngineVisualizer('engine-container', {
+                autoRotate: true,
+                showGrid: true,
+                showAxes: true,
+                engineParams: {
+                    chamberLength: 0.15,
+                    chamberDiameter: 0.08,
+                    throatDiameter: 0.03,
+                    exitDiameter: 0.09,
+                    nozzleLength: 0.12
+                }
+            });
+            
+            // Set initial state
+            visualizer.updateEngineState({
+                status: 'Standby',
+                chamberPressure: 0.1,
+                mixtureRatio: 0
+            });
+            
+            // Expose visualizer to window for debugging
+            window.engineVisualizer = visualizer;
+            
+            // Set up UI controls
+            setupUIControls(visualizer);
+            
+            // Start updating performance metrics
+            setInterval(updateMetrics, 100);
+        });
+        
+        // Set up UI controls
+        function setupUIControls(visualizer) {
+            // Status buttons
+            document.getElementById('btn-standby').addEventListener('click', () => {
+                visualizer.setEngineStatus('Standby');
+                updateStatusIndicator('Standby');
+            });
+            
+            document.getElementById('btn-ignition').addEventListener('click', () => {
+                visualizer.setEngineStatus('Ignition Sequence');
+                updateStatusIndicator('Ignition Sequence');
+            });
+            
+            document.getElementById('btn-startup').addEventListener('click', () => {
+                visualizer.setEngineStatus('Startup');
+                updateStatusIndicator('Startup');
+            });
+            
+            document.getElementById('btn-nominal').addEventListener('click', () => {
+                visualizer.setEngineStatus('Nominal Operation');
+                updateStatusIndicator('Nominal Operation');
+            });
+            
+            document.getElementById('btn-shutdown').addEventListener('click', () => {
+                visualizer.setEngineStatus('Shutdown Sequence');
+                updateStatusIndicator('Shutdown Sequence');
+            });
+            
+            // Camera controls
+            document.getElementById('btn-camera-default').addEventListener('click', () => {
+                visualizer.setCameraView({x: 0.3, y: 0.3, z: 0.3});
+            });
+            
+            document.getElementById('btn-camera-side').addEventListener('click', () => {
+                visualizer.setCameraView({x: 0.4, y: 0, z: 0.1});
+            });
+            
+            document.getElementById('btn-camera-top').addEventListener('click', () => {
+                visualizer.setCameraView({x: 0, y: 0, z: 0.4});
+            });
+            
+            document.getElementById('btn-auto-rotate').addEventListener('click', () => {
+                const isAutoRotating = visualizer.controls.autoRotate;
+                visualizer.setAutoRotate(!isAutoRotating);
+            });
+            
+            // Sliders
+            const chamberPressureSlider = document.getElementById('chamber-pressure');
+            const pressureValueSpan = document.getElementById('pressure-value');
+            
+            chamberPressureSlider.addEventListener('input', () => {
+                const value = parseFloat(chamberPressureSlider.value);
+                pressureValueSpan.textContent = value.toFixed(1);
+                
+                visualizer.updateEngineState({
+                    chamberPressure: value
+                });
+            });
+            
+            const mixtureRatioSlider = document.getElementById('mixture-ratio');
+            const mixtureValueSpan = document.getElementById('mixture-value');
+            
+            mixtureRatioSlider.addEventListener('input', () => {
+                const value = parseFloat(mixtureRatioSlider.value);
+                mixtureValueSpan.textContent = value.toFixed(1);
+                
+                visualizer.updateEngineState({
+                    mixtureRatio: value
+                });
+            });
+            
+            // Initial status indicator
+            updateStatusIndicator('Standby');
+        }
+        
+        // Update status indicator color and text
+        function updateStatusIndicator(status) {
+            const indicator = document.getElementById('status-indicator');
+            const statusText = document.getElementById('status-text');
+            
+            statusText.textContent = status;
+            
+            switch(status) {
+                case 'Nominal Operation':
+                    indicator.style.backgroundColor = '#00ff00';
+                    break;
+                case 'Startup':
+                    indicator.style.backgroundColor = '#ffaa00';
+                    break;
+                case 'Ignition Sequence':
+                    indicator.style.backgroundColor = '#ff6600';
+                    break;
+                case 'Shutdown Sequence':
+                    indicator.style.backgroundColor = '#ff0000';
+                    break;
+                case 'Standby':
+                default:
+                    indicator.style.backgroundColor = '#aaaaaa';
+                    break;
+            }
+        }
+        
+        // Update performance metrics based on current engine state
+        function updateMetrics() {
+            if (!window.engineVisualizer) return;
+            
+            const state = window.engineVisualizer.engineState;
+            
+            // Calculate simulated performance metrics
+            let thrust = 0;
+            let isp = 0;
+            let temp = 300;
+            let massFlow = 0;
+            
+            if (state.status === 'Nominal Operation') {
+                thrust = 5000 * state.chamberPressure * (0.9 + 0.2 * Math.random());
+                isp = 280 + 50 * (Math.min(state.mixtureRatio, 6) / 6);
+                temp = 2500 + 500 * (state.chamberPressure / 5) + 200 * Math.random();
+                massFlow = thrust / (isp * 9.81);
+            } else if (state.status === 'Startup') {
+                const factor = Math.min(1, (Date.now() % 10000) / 10000);
+                thrust = 3000 * state.chamberPressure * factor * (0.9 + 0.2 * Math.random());
+                isp = 200 + 100 * factor;
+                temp = 1000 + 1500 * factor + 100 * Math.random();
+                massFlow = thrust / (isp * 9.81);
+            } else if (state.status === 'Ignition Sequence') {
+                thrust = 500 * (0.5 + 0.5 * Math.random());
+                isp = 150 + 50 * Math.random();
+                temp = 800 + 300 * Math.random();
+                massFlow = thrust / (isp * 9.81);
+            } else if (state.status === 'Shutdown Sequence') {
+                const factor = Math.max(0, 1 - (Date.now() % 10000) / 10000);
+                thrust = 2000 * state.chamberPressure * factor * (0.9 + 0.2 * Math.random());
+                isp = 250 * factor;
+                temp = 1000 + 1500 * factor + 100 * Math.random();
+                massFlow = thrust / (isp * 9.81);
+            }
+            
+            // Update UI
+            document.getElementById('thrust-value').textContent = `${thrust.toFixed(0)} N`;
+            document.getElementById('isp-value').textContent = `${isp.toFixed(0)} s`;
+            document.getElementById('temp-value').textContent = `${temp.toFixed(0)} K`;
+            document.getElementById('flow-value').textContent = `${massFlow.toFixed(3)} kg/s`;
+        }
+    </script>
+</body>
+</html> 
