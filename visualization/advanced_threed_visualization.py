@@ -130,14 +130,8 @@ class AdvancedThreeDVisualization:
             "exitDiameter": state["exit_diameter"],
             "nozzleLength": state["nozzle_length"]
         })
-        
-        # Load JavaScript files
-        js_code = ""
-        for js_file in self.js_resources:
-            if js_file:
-                js_code += self._read_js_file(js_file) + "\n"
-        
-        # Create HTML with embedded JavaScript
+
+        # Create HTML with direct script tags for proper loading order
         html = f"""
         <!DOCTYPE html>
         <html>
@@ -147,12 +141,24 @@ class AdvancedThreeDVisualization:
                 body {{ margin: 0; padding: 0; overflow: hidden; }}
                 #engine-container {{ width: 100%; height: {self.height}px; }}
             </style>
+            <!-- Load Three.js first -->
+            <script src="https://cdn.jsdelivr.net/npm/three@0.137.0/build/three.min.js"></script>
+            <!-- Load Three.js dependencies -->
+            <script src="https://cdn.jsdelivr.net/npm/three@0.137.0/examples/js/controls/OrbitControls.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/stats.js@0.17.0/build/stats.min.js"></script>
         </head>
         <body>
             <div id="engine-container"></div>
+            
+            <!-- Load custom scripts -->
             <script>
-                {js_code}
-                
+                {self._read_js_file(self._get_js_path('utils.js'))}
+            </script>
+            <script>
+                {self._read_js_file(self._get_js_path('engine_visualization.js'))}
+            </script>
+            
+            <script>
                 // Initialize visualizer when DOM is loaded
                 document.addEventListener('DOMContentLoaded', function() {{
                     // Create engine visualizer
